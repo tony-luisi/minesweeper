@@ -1,11 +1,20 @@
 document.addEventListener('DOMContentLoaded', startGame)
 
+var board = {
+  cells: []
+}
+
 function startGame () {
-  var board = document.getElementsByClassName('board')
-  var children = board[0].children
-  for (var i = 0; i < children.length; i++){
+  var boardElement = document.getElementsByClassName('board')
+  var children = boardElement[0].children
+  for (var i = 0; i < children.length; i++) {
     addListeners(children[i])
+    getRow(children[i])
   }
+}
+
+function getRow (cell) {
+  return cell.classList[0].split("-")[1]
 }
 
 function addListeners(cell) {
