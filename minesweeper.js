@@ -11,6 +11,20 @@ function startGame () {
     addListeners(children[i])
     addCellToBoard(children[i])
   }
+  for (var i = 0; i < board.cells.length; i++) {
+    board.cells[i].surroundingMines = countMines(board.cells[i])
+  }
+}
+
+function countMines(cell) {
+  var surroundingCells = getSurroundingCells(cell.row, cell.col)
+  var mineCount = 0
+  for (var i = 0; i < surroundingCells.length; i++) {
+    if (surroundingCells[i].isMine) {
+      mineCount++
+    }
+  }
+  return mineCount
 }
 
 function addCellToBoard(cell) {
@@ -23,11 +37,11 @@ function addCellToBoard(cell) {
 }
 
 function getRow (cell) {
-  return cell.classList[0].split('-')[1]
+  return Number(cell.classList[0].split('-')[1])
 }
 
 function getCol (cell) {
-  return cell.classList[1].split('-')[1]
+  return Number(cell.classList[1].split('-')[1])
 }
 
 function addListeners(cell) {
@@ -37,9 +51,11 @@ function addListeners(cell) {
 
 function showCell(evt) {
   evt.target.classList.remove('hidden')
+  showSurrounding(evt.target)
 }
 
 function markCell(evt) {
   evt.preventDefault()
   evt.target.classList.toggle('marked')
+  evt.target.classList.toggle('hidden')
 }
