@@ -5,8 +5,7 @@ var board = {
 }
 
 function startGame () {
-  var boardElement = document.getElementsByClassName('board')
-  var children = boardElement[0].children
+  var children = getCells()
   for (var i = 0; i < children.length; i++) {
     addListeners(children[i])
     addCellToBoard(children[i])
@@ -14,6 +13,11 @@ function startGame () {
   for (var i = 0; i < board.cells.length; i++) {
     board.cells[i].surroundingMines = countMines(board.cells[i])
   }
+}
+
+function getCells(){
+  var boardElement = document.getElementsByClassName('board')
+  return boardElement[0].children
 }
 
 function countMines(cell) {
@@ -49,13 +53,51 @@ function addListeners(cell) {
   cell.addEventListener('contextmenu', markCell)
 }
 
+function checkForWin() {
+  var allMinesMarked = true
+  var allCellsUnhidden = true
+  var cells = board.cells
+  for (var i = 0; i < cells.length; i++) {
+    if (!cells[i].isMarked && cells[i].isMine) {
+      allMinesMarked = false
+    }
+  }
+  if (!allMinesMarked) {
+    return
+  }
+
+  var domCells = getCells()
+  for (var i = 0; i < domCells.length; i++) {
+    if (domCells[i].classList.contains('hidden')) {
+      allCellsUnhidden = false
+    }
+  }
+
+  if (allCellsUnhidden) {
+    alert("You won!")
+  }
+
+
+
+}
+
 function showCell(evt) {
   evt.target.classList.remove('hidden')
   showSurrounding(evt.target)
+  checkForWin()
 }
 
 function markCell(evt) {
   evt.preventDefault()
   evt.target.classList.toggle('marked')
   evt.target.classList.toggle('hidden')
+  var filteredCells = board.cells
+    .filter(function(cell){
+      return cell.row === getRow(evt.target)
+    })
+    .filter(function(cell){
+      return cell.col === getCol(evt.target)
+    })
+  filteredCells[0].isMarked = true
+  checkForWin()
 }
