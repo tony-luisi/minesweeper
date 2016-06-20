@@ -54,6 +54,7 @@ function addListeners(cell) {
 }
 
 function checkForWin() {
+  checkForLoss()
   var allMinesMarked = true
   var allCellsUnhidden = true
   var cells = board.cells
@@ -65,26 +66,35 @@ function checkForWin() {
   if (!allMinesMarked) {
     return
   }
-
   var domCells = getCells()
   for (var i = 0; i < domCells.length; i++) {
     if (domCells[i].classList.contains('hidden')) {
       allCellsUnhidden = false
     }
   }
-
   if (allCellsUnhidden) {
     alert("You won!")
   }
+}
 
-
+function checkForLoss(){
 
 }
 
 function showCell(evt) {
   evt.target.classList.remove('hidden')
+  if (evt.target.classList.contains('mine')) {
+    showAllMines()
+  }
   showSurrounding(evt.target)
   checkForWin()
+}
+
+function showAllMines(){
+  var cells = getCells()
+  for (var i = 0; i < cells.length; i++) {
+    cells[i].classList.remove('hidden')
+  }
 }
 
 function markCell(evt) {
